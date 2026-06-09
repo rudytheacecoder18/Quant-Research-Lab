@@ -1,189 +1,90 @@
-# 📊 Quant Research Lab V1
+# 📊 Quant Research Lab — V2
 
-A quantitative finance research platform built with Python and Streamlit for portfolio analysis, risk analytics, and strategy backtesting across US and Indian equity markets.
-
----
-
-## Overview
-
-Quant Research Lab is designed to help investors and aspiring quants analyze portfolios, evaluate risk-adjusted performance, study diversification effects, and compare investment strategies through an interactive dashboard.
-
-The project combines financial data analysis, portfolio analytics, and quantitative research techniques in a modular Python codebase.
+A professional equity research terminal for **US and Indian markets**, built in Python + Streamlit.
 
 ---
 
-## Features
+## What's in V2
 
-### Performance Analytics
-
-* CAGR (Compound Annual Growth Rate)
-* Annualized Volatility
-* Sharpe Ratio
-* Sortino Ratio
-* Maximum Drawdown
-* Equity Curve Visualization
-
-### Portfolio Simulator
-
-* Multi-asset portfolio construction
-* Custom portfolio weights
-* Portfolio vs Individual Asset comparison
-* Risk-return analysis
-
-### Correlation Analysis
-
-* Correlation Matrix
-* Diversification Insights
-* Asset Relationship Visualization
-
-### Strategy Lab
-
-* Buy & Hold Benchmark
-* SMA Crossover Strategy
-* Strategy Performance Comparison
-* Backtesting Framework
+| Tab | Feature | Concepts |
+|---|---|---|
+| 📊 Performance | CAGR, Sharpe, Sortino, Drawdown, Rolling Vol | Returns, Risk-adjusted metrics |
+| 🧮 Portfolio | Custom weights, blended metrics, correlation heatmap | Portfolio theory |
+| 🎲 Monte Carlo | 5,000+ random portfolios → risk/return cloud | Markowitz, diversification |
+| ⚡ Optimizer | Exact Max Sharpe & Min Variance weights via SciPy | Constrained optimisation |
+| 🛡️ VaR | Historical, Parametric, CVaR at 95% & 99% | Risk management, tail risk |
+| 📐 CAPM | Beta, Alpha, R², Security Market Line | Factor models, regression |
+| 🔬 Strategy Lab | Buy & Hold, SMA, EMA, RSI, MACD + heatmap | Backtesting, technical analysis |
 
 ---
 
-## Supported Markets
+## Setup
 
-### US Equities
+```bash
+# 1. Enter project folder
+cd quant-research-lab
 
-Examples:
+# 2. Create virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate      # Mac/Linux
+venv\Scripts\activate         # Windows
 
-* AAPL
-* MSFT
-* NVDA
-* GOOGL
-* SPY
+# 3. Install dependencies
+pip install -r requirements.txt
 
-### Indian Equities
+# 4. Run
+streamlit run src/dashboard/app.py
+```
 
-Examples:
-
-* RELIANCE.NS
-* TCS.NS
-* INFY.NS
-* HDFCBANK.NS
-* NIFTYBEES.NS
+Open `http://localhost:8501`
 
 ---
 
 ## Project Structure
 
-```text
-src/
-├── analytics/
-│   ├── returns.py
-│   └── risk.py
-├── data/
-│   └── data_loader.py
-├── portfolio/
-│   └── portfolio_engine.py
-├── strategies/
-│   ├── buy_hold.py
-│   └── sma_crossover.py
-├── visualization/
-│   └── charts.py
-└── dashboard/
-    └── app.py
+```
+quant-research-lab/
+├── src/
+│   ├── data/
+│   │   └── data_loader.py          # yfinance, US + Indian markets
+│   ├── analytics/
+│   │   ├── returns.py              # CAGR, cumulative returns
+│   │   ├── risk.py                 # Volatility, Sharpe, Sortino, Drawdown
+│   │   ├── var.py                  # Historical VaR, Parametric VaR, CVaR
+│   │   └── capm.py                 # Beta, Alpha, Expected Return, SML
+│   ├── portfolio/
+│   │   ├── portfolio_engine.py     # Blended portfolio metrics
+│   │   ├── monte_carlo.py          # Random portfolio simulation
+│   │   └── optimizer.py           # SciPy Max Sharpe / Min Variance
+│   ├── strategies/
+│   │   ├── buy_hold.py
+│   │   ├── sma_crossover.py
+│   │   ├── ema_strategy.py
+│   │   ├── rsi_strategy.py
+│   │   └── macd_strategy.py
+│   ├── visualization/
+│   │   ├── charts.py               # V1 charts (equity, drawdown, heatmap)
+│   │   └── frontier_charts.py      # V2 charts (MC scatter, SML, MACD, RSI)
+│   └── dashboard/
+│       └── app.py                  # Main Streamlit app (7 tabs)
+└── requirements.txt
 ```
 
 ---
 
-## Installation
+## Quick Start Tickers
 
-Clone the repository:
+| Preset | Tickers |
+|---|---|
+| US Tech Giants | AAPL, MSFT, NVDA, GOOGL, SPY |
+| Indian Blue Chips | RELIANCE.NS, TCS.NS, HDFCBANK.NS, INFY.NS, NIFTYBEES.NS |
+| Global Diversified | AAPL, MSFT, RELIANCE.NS, TCS.NS, SPY |
+| Defensive Mix | JNJ, KO, PG, SPY, GLD |
 
-```bash
-git clone https://github.com/rudytheacecoder18/Quant-Research-Lab.git
-cd Quant-Research-Lab
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate the environment:
-
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Launch the dashboard:
-
-```bash
-streamlit run src/dashboard/app.py
-```
+Benchmark for CAPM: `SPY` (US) or `NIFTYBEES.NS` (India)
 
 ---
 
-## Tech Stack
+## Roadmap
 
-* Python
-* Streamlit
-* Pandas
-* NumPy
-* Plotly
-* SciPy
-* yFinance
-
----
-
-## Future Roadmap
-
-### V2 – Portfolio Optimization
-
-* Efficient Frontier
-* Monte Carlo Portfolio Simulation
-* Maximum Sharpe Portfolio
-* Minimum Variance Portfolio
-
-### V3 – Risk Analytics
-
-* Value at Risk (VaR)
-* Conditional VaR
-* Rolling Volatility
-* Risk Attribution
-
-### V4 – Asset Pricing
-
-* CAPM
-* Alpha & Beta Analysis
-* Market Exposure Analytics
-
-### V5 – Quantitative Research
-
-* Fama-French Factor Models
-* Factor Attribution
-* Multi-Factor Portfolio Research
-
----
-
-## Learning Objectives
-
-This project serves as a practical exploration of:
-
-* Portfolio Management
-* Quantitative Finance
-* Risk Analytics
-* Financial Data Science
-* Algorithmic Strategy Evaluation
-
----
-
-## Author
-
-Rudraksh Mehta
-
-GitHub: https://github.com/rudytheacecoder18
+- **V3:** Fama-French 3-factor model, rolling beta, ML alpha signals, PDF export
