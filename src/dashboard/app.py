@@ -129,9 +129,14 @@ with st.sidebar:
         help="US: AAPL, MSFT, SPY  |  India: RELIANCE.NS, TCS.NS",
     )
 
-    period_map   = {"1 Year":"1y","2 Years":"2y","3 Years":"3y","5 Years":"5y"}
-    period_label = st.select_slider("Time Period", options=list(period_map.keys()), value="3 Years")
-    period       = period_map[period_label]
+    years = st.slider(
+        "Time Period (Years)",
+        min_value=1.0,
+        max_value=5.0,
+        value=3.0,
+        step=0.25,
+    )
+    st.caption(f"≈ {int(years * 365.25):,} calendar days  ·  ~{int(years * 252):,} trading days")
 
     rf_rate   = st.slider("Risk-Free Rate (%)", 0.0, 10.0, 6.0, 0.5) / 100
     mkt_ret   = st.slider("Expected Market Return (%)", 5.0, 20.0, 12.0, 0.5) / 100
@@ -191,7 +196,7 @@ tickers = [t.strip().upper() for t in ticker_input.split(",") if t.strip()]
 
 with st.spinner("📥 Fetching market data…"):
     try:
-        prices = load_price_data(tickers, period=period)
+        prices = load_price_data(tickers, years=years)
     except Exception as e:
         st.error(f"❌ Data error: {e}")
         st.stop()
@@ -199,7 +204,7 @@ with st.spinner("📥 Fetching market data…"):
     # Benchmark for CAPM
     bench_ticker = benchmark_input.strip().upper()
     try:
-        bench_prices = load_price_data([bench_ticker], period=period)
+        bench_prices = load_price_data([bench_ticker], years=years)
         bench_series = bench_prices.iloc[:, 0]
         # Align to same dates as main prices
         bench_series = bench_series.reindex(prices.index).ffill()

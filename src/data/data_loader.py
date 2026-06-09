@@ -25,7 +25,8 @@ def load_price_data(
     tickers: list[str],
     start_date: str = None,
     end_date: str = None,
-    period: str = "3y"
+    period: str = None,
+    years: float = 3.0,
 ) -> pd.DataFrame:
     """
     Download and clean historical closing prices for a list of tickers.
@@ -33,9 +34,15 @@ def load_price_data(
     Parameters
     ----------
     tickers    : list of ticker symbols e.g. ["AAPL", "RELIANCE.NS"]
-    start_date : "YYYY-MM-DD" — if provided, overrides `period`
-    end_date   : "YYYY-MM-DD" — defaults to today
-    period     : shorthand like "1y", "3y", "5y" (used if no start_date given)
+    start_date : "YYYY-MM-DD" — highest priority if provided
+    end_date   : "YYYY-MM-DD" — defaults to today (used with start_date)
+    period     : yfinance shorthand e.g. "1y", "3y" — used only if start_date
+                 is not given AND years is not given
+    years      : Decimal years of history e.g. 3.25 = 3 years 3 months.
+                 Converted to exact start/end dates — supports any increment.
+                 Used when start_date and period are both None (the default).
+
+    Priority:  start_date  >  years  >  period
 
     Returns
     -------
@@ -46,15 +53,30 @@ def load_price_data(
     if not tickers:
         raise ValueError("Please provide at least one ticker symbol.")
 
-    # Clean tickers — strip whitespace, uppercase US tickers
+    # Clean tickers — strip whitespace
     tickers = [t.strip() for t in tickers]
 
     print(f"📥 Fetching data for: {tickers}")
 
-    # Determine date range
+    # ── Determine date range ────────────────────────────────────────────────
+    # Priority: explicit start_date > years float > period string
     if start_date:
-        kwargs = {"start": start_date, "end": end_date or datetime.today().strftime("%Y-%m-%d")}
+        # Caller gave exact dates — use them directly
+        kwargs = {
+            "start": start_date,
+            "end"  : end_date or datetime.today().strftime("%Y-%m-%d"),
+        }
+    elif period is None or years is not None:
+        # Convert decimal years → exact calendar dates
+        # 365.25 accounts for leap years (one extra day every 4 years)
+        end_dt   = datetime.today()
+        start_dt = end_dt - timedelta(days=int(years * 365.25))
+        kwargs   = {
+            "start": start_dt.strftime("%Y-%m-%d"),
+            "end"  : end_dt.strftime("%Y-%m-%d"),
+        }
     else:
+        # Fall back to yfinance period string ("1y", "3y", etc.)
         kwargs = {"period": period}
 
     # Download from Yahoo Finance
